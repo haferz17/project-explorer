@@ -5,6 +5,7 @@ import { useMainStore } from "@/store/main";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import "github-markdown-css/github-markdown-dark.css";
 import Layout from "@/components/layout";
+import Topic from "@/components/topic";
 
 export default function Home() {
   const store = useMainStore();
@@ -18,11 +19,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <div
-        className={`flex w-full md:overflow-y-hidden relative ${
-          !store.showList && ""
-        }`}
-      >
+      <div className="flex w-full md:overflow-y-hidden relative">
         {/* route */}
         <div className="flex fixed pb-3 pl-5 sm:pl-9 md:pl-5 bg-[#212121] w-full top-[8rem] md:top-[5.5rem] z-[2]">
           {!store.loadingDetail && store.detail?.name && (
@@ -53,18 +50,7 @@ export default function Home() {
               <div className="bg-[#2F2F2F] rounded-lg px-5 py-3 flex flex-col gap-2 mb-7 mt-12 md:ml-5 h-fit w-full sm:w-[90%] md:w-[30%]">
                 <p className="font-semibold">About</p>
                 <p>{store.detail?.description}</p>
-                {store.detail?.topics.length ? (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {store.detail?.topics.map((y: any, i: number) => (
-                      <p
-                        key={i}
-                        className="rounded-lg text-xs font-semibold px-3 py-1 bg-[#F9DBBA] text-[#212121]"
-                      >
-                        {y}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
+                <Topic data={store.detail?.topics} />
                 <div className="flex items-center gap-2">
                   <p className="text-[#aaa]">
                     <span className="font-semibold text-white">

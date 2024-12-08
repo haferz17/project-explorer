@@ -5,8 +5,8 @@ import { useMainStore } from "@/store/main";
 import Image from "next/image";
 import moment from "moment";
 import { useRouter, useParams } from "next/navigation";
-import "highlight.js/styles/atom-one-dark.css";
 import Layout from "@/components/layout";
+import Topic from "@/components/topic";
 
 export default function Home() {
   const store = useMainStore();
@@ -78,7 +78,7 @@ export default function Home() {
                     {store.user?.email}
                   </a>
                   <a
-                    href={`https://x.com/${store.user?.blog}`}
+                    href={`${store.user?.blog}`}
                     target="_blank"
                     className="text-[#ddd] hover:text-white"
                   >
@@ -121,18 +121,7 @@ export default function Home() {
                   <p className="line-clamp-2 text-[.95rem] text-[#ddd]">
                     {x.description}
                   </p>
-                  {x.topics.length ? (
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {x.topics.map((y: any, i: number) => (
-                        <p
-                          key={i}
-                          className="rounded-lg text-xs font-semibold px-3 py-1 bg-[#F9DBBA] text-[#212121]"
-                        >
-                          {y}
-                        </p>
-                      ))}
-                    </div>
-                  ) : null}
+                  <Topic data={x.topics}/>
                   <p className="text-[.9rem] text-[#ddd]">
                     Updated on {moment(x.updated_at).format("ll")}
                   </p>

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useMainStore } from "@/store/main";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
+import Wrapper from "./wrapper";
 
 export default function Search() {
   const store = useMainStore();
@@ -22,6 +23,7 @@ export default function Search() {
 
   async function onSubmit(e: any) {
     e.preventDefault();
+    // @ts-ignore
     router.push(`/${inputRef?.current?.value}`);
   }
 
@@ -41,11 +43,11 @@ export default function Search() {
         >
           Project Explorer
         </p>
-        {!params?.user && (
+        <Wrapper if={!params?.user}>
           <p className="md:text-xl mx-5 mt-1 mb-3">
             Simplify your search for open-source inspiration on GitHub
           </p>
-        )}
+        </Wrapper>
       </div>
       <form
         onSubmit={onSubmit}
@@ -58,17 +60,17 @@ export default function Search() {
           placeholder="Type github username"
           className="w-full bg-transparent outline-none"
         />
-        {!store.loadingList && (
+        <Wrapper if={!store.loadingList}>
           <Image
             src={require("../assets/icons/search.svg")}
             alt={"search"}
             className="w-4 cursor-pointer"
             onClick={onSubmit}
           />
-        )}
-        {store.loadingList && (
+        </Wrapper>
+        <Wrapper if={store.loadingList}>
           <span className="loading loading-spinner loading-md"></span>
-        )}
+        </Wrapper>
       </form>
     </div>
   );
