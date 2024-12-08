@@ -1,33 +1,17 @@
 import { create } from "zustand";
 import { Octokit } from "octokit";
 import { marked } from "marked";
-
-interface State {
-  loadingList: boolean;
-  loadingDetail: boolean;
-  user: any;
-  showList: boolean;
-  projectList: any;
-  set: Function;
-  resetState: Function;
-  getListProject: Function;
-  getDetailProject: Function;
-  getReadme: Function;
-  projectName: string;
-  detail: any;
-  readme: string;
-  error: string;
-}
+import { MainStore } from "@/types/main";
 
 const octokit = new Octokit({
-  auth: "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",
+  auth: process.env.NEXT_PUBLIC_TOKEN,
 });
 
 const headers = {
   "X-GitHub-Api-Version": "2022-11-28",
 };
 
-export const useMainStore = create<State>((set, state) => ({
+export const useMainStore = create<MainStore>((set, state) => ({
   loadingList: false,
   loadingDetail: false,
   user: {},
@@ -37,7 +21,7 @@ export const useMainStore = create<State>((set, state) => ({
   detail: {},
   readme: "",
   error: "",
-  set: (val: any) => {
+  set: (val) => {
     set(() => val);
   },
   resetState: () => {
@@ -50,7 +34,7 @@ export const useMainStore = create<State>((set, state) => ({
       showList: false,
     }));
   },
-  getListProject: async (name: string) => {
+  getListProject: async (name) => {
     try {
       set(() => ({
         loadingList: true,
@@ -61,13 +45,16 @@ export const useMainStore = create<State>((set, state) => ({
         error: "",
         showList: true,
       }));
+
       const user = await octokit.request(`GET /users/${name}`, {
         headers,
       });
+
       const repos = await octokit.request(`GET /users/${name}/repos`, {
         sort: "pushed",
         headers,
       });
+
       set(() => ({
         showList: user?.data?.id !== undefined,
         user: user.data,
@@ -80,7 +67,7 @@ export const useMainStore = create<State>((set, state) => ({
       console.error(error);
     }
   },
-  getDetailProject: async (name: string) => {
+  getDetailProject: async (name) => {
     try {
       set(() => ({
         loadingDetail: true,
@@ -88,20 +75,21 @@ export const useMainStore = create<State>((set, state) => ({
         error: "",
         showList: true,
       }));
+
       const detail = await octokit.request(`GET /repos${name}`, { headers });
       const readme = await state().getReadme(name);
+
       set(() => ({
         detail: detail.data,
         readme,
         loadingDetail: false,
       }));
-      window.scrollTo(0, 0);
     } catch (error) {
       set(() => ({ loadingDetail: false, error: "Data not found" }));
       console.error(error);
     }
   },
-  getReadme: async (name: string) => {
+  getReadme: async (name) => {
     try {
       const readme = await octokit.request(`GET /repos${name}/readme`, {
         headers: {

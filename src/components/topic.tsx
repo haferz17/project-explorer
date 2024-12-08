@@ -1,10 +1,7 @@
 import Wrapper from "./wrapper";
+import { TopicProps } from "@/types/component";
 
-interface Props {
-  data: string[];
-}
-
-export default function Topic({ data }: Props) {
+export default function Topic({ data }: TopicProps) {
   return (
     <Wrapper if={data.length > 0}>
       <div className="flex items-center gap-2 flex-wrap">
