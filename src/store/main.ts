@@ -9,6 +9,7 @@ interface State {
   showList: boolean;
   projectList: any;
   set: Function;
+  resetState: Function;
   getListProject: Function;
   getDetailProject: Function;
   getReadme: Function;
@@ -39,7 +40,17 @@ export const useMainStore = create<State>((set, state) => ({
   set: (val: any) => {
     set(() => val);
   },
-  getListProject: async (ref: any) => {
+  resetState: () => {
+    set(() => ({
+      user: {},
+      projectList: [],
+      detail: {},
+      readme: "",
+      error: "",
+      showList: false,
+    }));
+  },
+  getListProject: async (name: string) => {
     try {
       set(() => ({
         loadingList: true,
@@ -48,15 +59,15 @@ export const useMainStore = create<State>((set, state) => ({
         detail: {},
         readme: "",
         error: "",
+        showList: true,
       }));
-      const user = await octokit.request(`GET /users/${ref?.current?.value}`, {
+      const user = await octokit.request(`GET /users/${name}`, {
         headers,
       });
-      const repos = await octokit.request(
-        `GET /users/${ref?.current?.value}/repos`,
-        { sort: "pushed", headers }
-      );
-      console.log("list", user, repos);
+      const repos = await octokit.request(`GET /users/${name}/repos`, {
+        sort: "pushed",
+        headers,
+      });
       set(() => ({
         showList: user?.data?.id !== undefined,
         user: user.data,
@@ -64,7 +75,6 @@ export const useMainStore = create<State>((set, state) => ({
         loadingList: false,
         error: repos.data.length ? "" : "No public project yet",
       }));
-      window.scrollTo(0, 0);
     } catch (error) {
       set(() => ({ loadingList: false, error: "Data empty" }));
       console.error(error);
@@ -72,11 +82,14 @@ export const useMainStore = create<State>((set, state) => ({
   },
   getDetailProject: async (name: string) => {
     try {
-      set(() => ({ loadingDetail: true, projectName: name, error: "" }));
-      const detail = await octokit.request(`GET /repos/${name}`, { headers });
+      set(() => ({
+        loadingDetail: true,
+        projectName: name,
+        error: "",
+        showList: true,
+      }));
+      const detail = await octokit.request(`GET /repos${name}`, { headers });
       const readme = await state().getReadme(name);
-      //   const a = await marked.parse(readme.data);
-      console.log("detail", detail, readme);
       set(() => ({
         detail: detail.data,
         readme,
@@ -90,20 +103,22 @@ export const useMainStore = create<State>((set, state) => ({
   },
   getReadme: async (name: string) => {
     try {
-      const readme = await octokit.request(`GET /repos/${name}/readme`, {
+      const readme = await octokit.request(`GET /repos${name}/readme`, {
         headers: {
           ...headers,
           Accept: "application/vnd.github.raw+json",
         },
       });
-      //   const markdown = await octokit.request("POST /markdown", {
-      //     text: readme.data,
-      //     headers,
-      //   });
+
+      if (typeof readme.data !== "string") {
+        const decode = atob(readme.data?.content);
+        return decode;
+      }
+
       return readme.data;
     } catch (error) {
       console.error(error);
-      return '<p class="text-red-200">Readme not created yet</p>';
+      return "Readme not created yet";
     }
   },
 }));
