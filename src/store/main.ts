@@ -11,6 +11,7 @@ interface State {
   set: Function;
   getListProject: Function;
   getDetailProject: Function;
+  getReadme: Function;
   projectName: string;
   detail: any;
   readme: string;
@@ -44,6 +45,7 @@ export const useMainStore = create<State>((set, state) => ({
         loadingList: true,
         user: {},
         projectList: [],
+        detail: {},
         readme: "",
         error: "",
       }));
@@ -62,8 +64,9 @@ export const useMainStore = create<State>((set, state) => ({
         loadingList: false,
         error: repos.data.length ? "" : "No public project yet",
       }));
+      window.scrollTo(0, 0);
     } catch (error) {
-      set(() => ({ loadingList: false, error: "Data not found" }));
+      set(() => ({ loadingList: false, error: "Data empty" }));
       console.error(error);
     }
   },
@@ -71,27 +74,36 @@ export const useMainStore = create<State>((set, state) => ({
     try {
       set(() => ({ loadingDetail: true, projectName: name, error: "" }));
       const detail = await octokit.request(`GET /repos/${name}`, { headers });
+      const readme = await state().getReadme(name);
+      //   const a = await marked.parse(readme.data);
+      console.log("detail", detail, readme);
+      set(() => ({
+        detail: detail.data,
+        readme,
+        loadingDetail: false,
+      }));
+      window.scrollTo(0, 0);
+    } catch (error) {
+      set(() => ({ loadingDetail: false, error: "Data not found" }));
+      console.error(error);
+    }
+  },
+  getReadme: async (name: string) => {
+    try {
       const readme = await octokit.request(`GET /repos/${name}/readme`, {
         headers: {
           ...headers,
           Accept: "application/vnd.github.raw+json",
         },
       });
-      const markdown = await octokit.request("POST /markdown", {
-        text: readme.data,
-        headers,
-      });
-
-      const a = await marked.parse(readme.data);
-      console.log("detail", detail, readme, markdown, a);
-      set(() => ({
-        detail: detail.data,
-        readme: readme.data,
-        loadingDetail: false,
-      }));
+      //   const markdown = await octokit.request("POST /markdown", {
+      //     text: readme.data,
+      //     headers,
+      //   });
+      return readme.data;
     } catch (error) {
-      set(() => ({ loadingDetail: false, error: "Data not found" }));
       console.error(error);
+      return '<p class="text-red-200">Readme not created yet</p>';
     }
   },
 }));
