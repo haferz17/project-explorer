@@ -115,7 +115,9 @@ export const useMainStore = create<State>((set, state) => ({
         return decode;
       }
 
-      return readme.data;
+      const html = marked(readme.data);
+
+      return html;
     } catch (error) {
       console.error(error);
       return "Readme not created yet";

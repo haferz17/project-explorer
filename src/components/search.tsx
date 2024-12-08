@@ -12,8 +12,10 @@ export default function Search() {
   const params = useParams();
 
   useEffect(() => {
-    // @ts-ignore
-    inputRef.current.focus();
+    if (!params?.user) {
+      // @ts-ignore
+      inputRef.current.focus();
+    }
     // @ts-ignore
     inputRef.current.value = params?.user || "";
   }, []);

@@ -1,22 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useMainStore } from "@/store/main";
-import commonmark from "commonmark";
-import MarkdownView from "react-showdown";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import rehypeHighlight from "rehype-highlight";
-import Image from "next/image";
-import moment from "moment";
 import { useRouter, usePathname, useParams } from "next/navigation";
-import "highlight.js/styles/atom-one-dark.css";
+import "github-markdown-css/github-markdown-dark.css";
 import Layout from "@/components/layout";
 
 export default function Home() {
   const store = useMainStore();
-  const inputRef = useRef(null);
   const router = useRouter();
   const path = usePathname();
   const params = useParams();
@@ -108,16 +99,14 @@ export default function Home() {
 
             {/* readme */}
             {store.readme && !store.loadingDetail && (
-              <div className="md:mt-12 md:overflow-y-auto h-full w-full sm:w-[90%] md:w-[70%] pb-10 md:pr-5 max-sm:px-5">
-                <p className="text-lg font-semibold border-b-2 pr-3 border-[#FB773C] mb-5">
+              <div className="md:mt-12 md:overflow-y-auto h-full w-full sm:w-[90%] md:w-[70%] pb-10 md:pr-5">
+                <p className="text-lg font-semibold border-b-2 pr-3 border-[#FB773C] mb-5 max-sm:mx-5">
                   Readme
                 </p>
-                <Markdown
-                  rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                  className="max-md:pb-14"
-                >
-                  {store.readme}
-                </Markdown>
+                <div
+                  className="markdown-body"
+                  dangerouslySetInnerHTML={{ __html: store.readme }}
+                />
               </div>
             )}
           </div>
