@@ -6,6 +6,7 @@ interface State {
   loadingList: boolean;
   loadingDetail: boolean;
   user: any;
+  showList: boolean;
   projectList: any;
   set: Function;
   getListProject: Function;
@@ -28,6 +29,7 @@ export const useMainStore = create<State>((set, state) => ({
   loadingList: false,
   loadingDetail: false,
   user: {},
+  showList: false,
   projectList: [],
   projectName: "",
   detail: {},
@@ -38,22 +40,30 @@ export const useMainStore = create<State>((set, state) => ({
   },
   getListProject: async (ref: any) => {
     try {
-      set(() => ({ loadingList: true, readme: "", error: "" }));
+      set(() => ({
+        loadingList: true,
+        user: {},
+        projectList: [],
+        readme: "",
+        error: "",
+      }));
       const user = await octokit.request(`GET /users/${ref?.current?.value}`, {
         headers,
       });
       const repos = await octokit.request(
         `GET /users/${ref?.current?.value}/repos`,
-        { headers }
+        { sort: "pushed", headers }
       );
       console.log("list", user, repos);
       set(() => ({
+        showList: user?.data?.id !== undefined,
         user: user.data,
         projectList: repos.data,
         loadingList: false,
+        error: repos.data.length ? "" : "No public project yet",
       }));
     } catch (error) {
-      set(() => ({ loadingList: false }));
+      set(() => ({ loadingList: false, error: "Data not found" }));
       console.error(error);
     }
   },
