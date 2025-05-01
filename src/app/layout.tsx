@@ -24,6 +24,9 @@ export const metadata: Metadata = {
       {
         url: "https://project-explorer-sigma.vercel.app/opengraph-image.png",
       },
+      {
+        url: "https://project-explorer-sigma.vercel.app/og-image.png",
+      },
     ],
   },
 };
