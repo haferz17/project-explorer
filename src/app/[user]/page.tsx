@@ -15,7 +15,7 @@ export default function User() {
   const params = useParams();
 
   useEffect(() => {
-    store.getListProject(params?.user);
+    store.getListProject(params?.user || "");
   }, []);
 
   return (
