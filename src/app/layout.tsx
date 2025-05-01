@@ -22,10 +22,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://project-explorer-sigma.vercel.app/opengraph-image.png",
-      },
-      {
-        url: "https://project-explorer-sigma.vercel.app/og-image.png",
+        url: "https://project-explorer-sigma.vercel.app/opengraph-image.png?v=1",
       },
     ],
   },
