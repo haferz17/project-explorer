@@ -16,6 +16,16 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Project Explorer",
   description: "Find your inspiration on GitHub",
+  openGraph: {
+    title: "Project Explorer",
+    description: "Find your inspiration on GitHub",
+    type: "website",
+    images: [
+      {
+        url: "https://project-explorer-sigma.vercel.app/opengraph-image.png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
