@@ -20,9 +20,14 @@ export const metadata: Metadata = {
     title: "Project Explorer",
     description: "Find your inspiration on GitHub",
     type: "website",
+    url: "https://subtle-bienenstitch-26af8d.netlify.app",
     images: [
       {
+        url: "https://subtle-bienenstitch-26af8d.netlify.app/opengraph-image.png",
+      },
+      {
         url: "https://subtle-bienenstitch-26af8d.netlify.app/og-image.png",
+        alt: "My custom alt",
       },
     ],
   },
