@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://project-explorer-sigma.vercel.app/og-image.png?v=1",
+        url: "https://subtle-bienenstitch-26af8d.netlify.app/og-image.png",
       },
     ],
   },
