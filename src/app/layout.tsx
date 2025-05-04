@@ -20,11 +20,11 @@ export const metadata: Metadata = {
     title: "Project Explorer",
     description: "Find your inspiration on GitHub",
     type: "website",
-    images: [
-      {
-        url: "https://project-explorer-sigma.vercel.app/opengraph-image.png?v=1",
-      },
-    ],
+    // images: [
+    //   {
+    //     url: "https://project-explorer-sigma.vercel.app/opengraph-image.png?v=1",
+    //   },
+    // ],
   },
 };
 
